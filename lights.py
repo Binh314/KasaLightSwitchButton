@@ -18,7 +18,7 @@ def switch_lights():
 
 GPIO.setmode(GPIO.BCM)
 
-sleep_time = 0.1
+sleep_time = 0
 
 buttonPin = 17
 
