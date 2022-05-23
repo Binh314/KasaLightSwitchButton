@@ -10,6 +10,11 @@ class Lights:
         self.button_state = 0
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.button_pin, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+        lights_state = os.popen(f'kasa --alias "{lights_name}" state').read()
+        lights_state_tokens = lights_state.split()
+        lights_ip_index = lights_state_tokens.index("hostname") + 2
+        
+        self.lights_ip = lights_state_tokens[lights_ip_index]
         
     def update(self):
         if self.button_state == 0:
@@ -18,18 +23,24 @@ class Lights:
         if self.button_state == 1:
             if (GPIO.input(self.button_pin)):
                 self.button_state = 0
-                switch_lights(self.name)
-
-def switch_lights(lights_name):
-    lights_state = os.popen(f'kasa --alias "{lights_name}" state').read()
+                switch_lights(self.lights_ip)
+            
+def switch_lights(lights_ip):
+    lights_state = os.popen(f'kasa --host "{lights_ip}" state').read()
     lights_state_tokens = lights_state.split()
     lights_on_index = lights_state_tokens.index("state:") + 1
     lights_on = lights_state_tokens[lights_on_index] == "ON"
-    lights_ip_index = lights_state_tokens.index("hostname") + 2
-    lights_ip = lights_state_tokens[lights_ip_index]
+
     command = "on"
     if (lights_on): command = "off"
     os.system(f'kasa --host {lights_ip} {command}')
+
+def switch_lights_by_name(lights_name):
+    lights_state = os.popen(f'kasa --alias "{lights_name}" state').read()
+    lights_state_tokens = lights_state.split()
+    lights_ip_index = lights_state_tokens.index("hostname") + 2
+    lights_ip = lights_state_tokens[lights_ip_index]
+    switch_lights(lights_ip)
 
 
 if __name__ == "__main__":
