@@ -29,7 +29,7 @@ def switch_lights(lights_ip):
     lights_state = os.popen(f'kasa --host "{lights_ip}" state').read()
     lights_state_tokens = lights_state.split()
     lights_on_index = lights_state_tokens.index("state:") + 1
-    lights_on = lights_state_tokens[lights_on_index] == "ON"
+    lights_on = lights_state_tokens[lights_on_index] == "True"
 
     command = "on"
     if (lights_on): command = "off"
