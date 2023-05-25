@@ -33,11 +33,15 @@ def switch_lights_by_name(lights_name):
 
 
 if __name__ == "__main__":
-    bedroom_lights = Lights("Bedroom Lights")
+    while True:
+        try: 
+            bedroom_lights = Lights("Bedroom Lights")
 
-    def switch_light_on_key_release(key):
-        if key == keyboard.Key.pause:
-            bedroom_lights.switch()
+            def switch_light_on_key_release(key):
+                if key == keyboard.Key.pause:
+                    bedroom_lights.switch()
 
-    with keyboard.Listener(on_release = switch_light_on_key_release) as listener:
-        listener.join()
+            with keyboard.Listener(on_release = switch_light_on_key_release) as listener:
+                listener.join()
+        except:
+            print("Restarting...")
